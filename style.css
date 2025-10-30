@@ -1,0 +1,250 @@
+body {
+  background: linear-gradient(270deg, #6d188f, #ad40ce, #f700ff, #f9b8e6);
+  background-size: 800% 800%;
+  animation: moverGradiente 10s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+@keyframes moverGradiente {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.card {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  transition: all 0.4s ease;
+  box-sizing: border-box;
+  margin: 0 10px;
+}
+
+h1 {
+  color: #a84fd1;
+  font-weight: 700;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+  font-size: 2rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mensagem-especial {
+  font-size: 1.1em;
+  line-height: 1.5;
+  text-align: justify;
+  margin-bottom: 25px;
+}
+
+.mensagem-especial p {
+  text-indent: 1.8em;
+  margin-bottom: 0.9em;
+}
+
+.mensagem-especial strong {
+  color: #a84fd1; 
+  font-weight: 700;
+}
+
+.mensagem-especial.sumir {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+@keyframes piscarCores {
+  0%   { color: #6d188f; }
+  20%  { color: #ad40ce; }
+  40%  { color: #e485d4; }
+  60%  { color: #ff00b3; }
+  80%  { color: #f700ff; }
+  100% { color: #8f00ff; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.pisca-colorido {
+  animation: piscarCores 1.5s infinite, pulse 1.5s infinite;
+  font-weight: 700;
+  display: inline-block;
+  text-shadow: 0 0 8px rgba(255,255,255,0.6);
+}
+
+button {
+  background: linear-gradient(135deg, #d86bff, #c441b8);
+  border: none;
+  color: white;
+  font-size: 1em;
+  padding: 10px 25px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#detalhes {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease, max-height 0.7s ease;
+  max-height: 0;
+  overflow: hidden;
+}
+
+#detalhes.ativo {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 1000px;
+  transition: opacity 1s ease, transform 1s ease, max-height 1s ease;
+}
+
+#detalhes p {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.05rem;
+  color: #6a1b9a;
+  border-radius: 14px;
+  padding: 8px 14px;
+  margin: 10px 0;
+  display: inline-block;
+  line-height: 1.6;
+}
+
+#detalhes h2, #detalhes h3 {
+  font-family: "Sofia", cursive;
+  color: #7b1fa2;
+  margin-bottom: 10px;
+}
+
+.detalhes-info {
+  background: linear-gradient(135deg, #f9b8e6, #eac4ff);
+  padding: 20px 25px;
+  border-radius: 18px;
+  display: inline-block;
+  margin: 10px 0;
+  text-align: left;
+}
+
+#detalhes .detalhes-info p {
+  font-size: 1.4rem;
+  line-height: 1.8;
+  margin: 1px 0;
+  color: #6a1b9a;
+  font-weight: 500;
+}
+
+.detalhes-info p strong {
+  color: #a84fd1;
+}
+
+.rodape {
+  margin-top: 25px;
+  font-size: 0.9em;
+  color: #555;
+  font-style: italic;
+  border-top: 1px solid rgba(0,0,0,0.1);
+  padding-top: 10px;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.botoes {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sim {
+  background: #d34ab5;
+  color: white;
+  font-weight: 500;
+}
+
+.nao {
+  background: #c7789f;
+  color: white;
+  font-weight: 500;
+}
+
+#btnAbrir {
+  display: block;
+  margin: 20px auto;
+}
+
+#btnAbrir:active,
+#btnSim:active,
+#btnNao:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: transform 0.1s ease;
+}
+
+#resposta {
+  text-align: center;
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  width: 100%;
+  display: flex;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particleAnim 1.5s forwards;
+}
+
+@keyframes particleAnim {
+  0% { transform: translate(0,0) scale(1); opacity:1; }
+  100% { transform: translate(var(--x),var(--y)) scale(0); opacity:0; }
+}
+
+@media screen and (max-width: 500px) {
+  h1 {
+    font-size: 1.5rem;
+    white-space: normal;
+    overflow: visible;
+  }
+}
+
+
+  .mensagem-especial {
+    font-size: 1em;
+  }
+
+  #detalhes .detalhes-info p {
+    font-size: 1.2rem;
+  }
+
+  button {
+    font-size: 0.95em;
+    padding: 9px 20px;
+  }
+
+  button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+  .card {
+    padding: 20px;
+    max-width: 95%;
+  }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Painel de Respostas</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #eee; }
+    button { margin-top: 20px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h1>Painel de Respostas</h1>
+  <table id="tabelaRespostas">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Resposta</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <button onclick="exportarCSV()">Exportar para CSV</button>
+
+  <script>
+    fetch("https://convite-backend-oyla.onrender.com/api/respostas")
+      .then(res => res.json())
+      .then(dados => {
+        const tbody = document.querySelector("#tabelaRespostas tbody");
+        dados.forEach(({ nome, resposta, data }) => {
+          const linha = document.createElement("tr");
+          linha.innerHTML = `<td>${nome}</td><td>${resposta}</td><td>${new Date(data).toLocaleString()}</td>`;
+          tbody.appendChild(linha);
+        });
+      });
+
+    function exportarCSV() {
+      const linhas = [["Nome", "Resposta", "Data"]];
+      document.querySelectorAll("#tabelaRespostas tbody tr").forEach(tr => {
+        const dados = Array.from(tr.children).map(td => td.textContent);
+        linhas.push(dados);
+      });
+
+      const csv = linhas.map(l => l.join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "respostas.csv";
+      link.click();
+    }
+  </script>
+</body>
+</html>

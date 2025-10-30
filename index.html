@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convite de Aniversário 🎉</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <audio id="musicaFundo" loop>
+  <source src="Sons/Song.mp3" type="audio/mpeg">
+</audio>
+
+
+  <div class="card">
+    <h1><strong class="pisca-colorido">🎂 Convite Especial 🎂</strong></h1>
+
+    <div id="mensagemEspecial" class="mensagem-especial">
+  <p>
+    Você está convidado para celebrar a vida da Perfeita nesse sábado! 💖
+  </p>
+  <p>
+    Uma mulher incrível, linda e maravilhosa — uma <strong>avó</strong> amorosa, uma <strong>filha</strong> dedicada, uma <strong>mãe</strong> excepcional. 🌷
+  </p>
+  <p>
+    São <Strong>66 anos</Strong> de memórias, lutas e vitórias que merecem ser comemorados com muito amor, alegria e carinho. 🌸
+  </p>
+  <p>
+    Venha fazer parte dessa jantinha e celebrar cada momento especial com a nossa querida <strong>Irma</strong>, essa mulher maravilhosa que ilumina a vida de todos! 🎉💕
+  </p>
+</div>
+
+    <button id="btnAbrir">Abrir Convite 🎁</button>
+
+    <div id="detalhes" class="detalhes hidden">
+        <div class="detalhes-info">
+            <p>📅 <strong>Data:</strong> 1 de Outubro de 2025</p>
+            <p>📍 <strong>Local:</strong> Casa da Piscina 🎈</p>
+            <p>⏰ <strong>Horário:</strong> 19:00 às 22:30</p>
+        </div>
+
+      <div id="areaNome" style="text-align: center; margin-bottom: 20px;">
+        <label for="nomeConvidado">Digite seu nome:</label><br>
+        <input type="text" id="nomeConvidado" placeholder="Seu nome" style="padding: 8px; width: 60%; max-width: 300px;">
+      </div>
+        <div class="botoes">
+            <button id="btnSim" class="sim">Vou! 💕</button>
+            <button id="btnNao" class="nao">Não vou 😢</button>
+        </div>
+
+      <p id="resposta"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
