@@ -109,7 +109,7 @@
         linha.innerHTML = `
           <td>${nome}</td>
           <td>${resposta}</td>
-          <td>${new Date(data).toLocaleString()}</td>
+          <td>${new Date(data).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}</td>
           <td>
             ${id ? `<button onclick="apagarResposta('${id}', this)">🗑️</button>` : "—"}
           </td>
