@@ -20,7 +20,7 @@ function enviarResposta(respostaEscolhida) {
   const nome = nomeConvidado.value.trim() || "Anônimo";
   const data = new Date().toISOString();
 
-  fetch("https://convite-backend-61sh.onrender.com/api/resposta", {
+  fetch("https://convite-backend-46vc.onrender.com/api/resposta", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ nome, resposta: respostaEscolhida, data }),
