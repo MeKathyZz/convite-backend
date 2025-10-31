@@ -86,7 +86,7 @@
   <script>
     let dadosOriginais = [];
 
-    fetch("https://convite-backend-61sh.onrender.com/api/respostas")
+    fetch("https://convite-backend-46vc.onrender.com/api/respostas")
       .then(res => res.json())
       .then(dados => {
         dadosOriginais = dados;
@@ -125,7 +125,7 @@
     function apagarResposta(id, botao) {
       if (confirm("Apagar esta resposta?")) {
         botao.classList.add("loading");
-        fetch(`https://convite-backend-61sh.onrender.com/api/resposta/${id}`, {
+        fetch(`https://convite-backend-46vc.onrender.com/api/resposta/${id}`, {
           method: "DELETE"
         })
         .then(res => res.json())
@@ -154,7 +154,7 @@
 
     document.getElementById("btnLimpar").addEventListener("click", () => {
       if (confirm("Tem certeza que deseja apagar TODAS as respostas?")) {
-        fetch("https://convite-backend-61sh.onrender.com/api/resposta", {
+        fetch("https://convite-backend-46vc.onrender.com/api/resposta", {
           method: "DELETE"
         })
         .then(res => res.json())
