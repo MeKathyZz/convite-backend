@@ -14,32 +14,6 @@
       text-align: center;
       margin-bottom: 30px;
     }
-    form {
-      display: flex;
-      flex-direction: column;
-      max-width: 400px;
-      margin: 0 auto 40px auto;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    input, select, button {
-      margin-bottom: 15px;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -64,29 +38,24 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 10px;
     }
     #btnLimpar:hover {
       background-color: #b71c1c;
+    }
+    #contagem {
+      font-weight: bold;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
   <h1>Painel de Confirmação de Presença</h1>
 
-  <form onsubmit="enviarResposta(event)">
-    <input type="text" id="nome" placeholder="Seu nome" required>
-    <select id="resposta" required>
-      <option value="">Selecione sua resposta</option>
-      <option value="Sim">Sim</option>
-      <option value="Não">Não</option>
-    </select>
-    <button type="submit">Confirmar Presença</button>
-  </form>
-
   <div class="center">
     <button onclick="exportarCSV()">📄 Exportar Respostas em CSV</button>
     <button id="btnLimpar">🗑️ Limpar todas as respostas</button>
+    <div id="contagem"></div>
   </div>
 
   <table id="tabelaRespostas">
@@ -95,6 +64,7 @@
         <th>Nome</th>
         <th>Resposta</th>
         <th>Data</th>
+        <th>Apagar</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -106,40 +76,33 @@
       .then(res => res.json())
       .then(dados => {
         const tbody = document.querySelector("#tabelaRespostas tbody");
-        dados.forEach(({ nome, resposta, data }) => {
+        let totalSim = 0;
+
+        dados.forEach(item => {
+          const nome = item.Nome || "—";
+          const resposta = item.Resposta || "—";
+          const data = item.Data || new Date().toISOString();
+
           const linha = document.createElement("tr");
-          linha.innerHTML = `<td>${nome}</td><td>${resposta}</td><td>${new Date(data).toLocaleString()}</td>`;
+          linha.innerHTML = `
+            <td>${nome}</td>
+            <td>${resposta}</td>
+            <td>${new Date(data).toLocaleString()}</td>
+            <td>—</td> <!-- Sem _id, não dá pra apagar individualmente -->
+          `;
           tbody.appendChild(linha);
+
+          if (resposta && resposta.toLowerCase() === "sim") totalSim++;
         });
-      });
 
-    // Envia nova resposta
-    function enviarResposta(event) {
-      event.preventDefault();
-      const nome = document.querySelector("#nome").value.trim();
-      const resposta = document.querySelector("#resposta").value;
-      const data = new Date().toISOString();
-
-      fetch("https://convite-backend-61sh.onrender.com/api/resposta", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nome, resposta, data })
-      })
-      .then(res => {
-        if (res.ok) {
-          alert("Resposta enviada com sucesso!");
-          location.reload();
-        } else {
-          alert("Erro ao enviar resposta.");
-        }
+        document.getElementById("contagem").textContent = `Total de confirmados: ${totalSim}`;
       });
-    }
 
     // Exporta CSV da tabela
     function exportarCSV() {
       const linhas = [["Nome", "Resposta", "Data"]];
       document.querySelectorAll("#tabelaRespostas tbody tr").forEach(tr => {
-        const dados = Array.from(tr.children).map(td => td.textContent);
+        const dados = Array.from(tr.children).slice(0, 3).map(td => td.textContent);
         linhas.push(dados);
       });
 
@@ -151,7 +114,7 @@
       link.click();
     }
 
-    // Botão para limpar todas as respostas
+    // Apaga todas as respostas
     document.getElementById("btnLimpar").addEventListener("click", () => {
       if (confirm("Tem certeza que deseja apagar TODAS as respostas?")) {
         fetch("https://convite-backend-61sh.onrender.com/api/resposta", {
