@@ -55,6 +55,19 @@
     }
     .center {
       text-align: center;
+      margin-top: 20px;
+    }
+    #btnLimpar {
+      background-color: #d32f2f;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #btnLimpar:hover {
+      background-color: #b71c1c;
     }
   </style>
 </head>
@@ -72,7 +85,8 @@
   </form>
 
   <div class="center">
-    <button onclick="exportarCSV()">Exportar Respostas em CSV</button>
+    <button onclick="exportarCSV()">📄 Exportar Respostas em CSV</button>
+    <button id="btnLimpar">🗑️ Limpar todas as respostas</button>
   </div>
 
   <table id="tabelaRespostas">
@@ -136,6 +150,21 @@
       link.download = "respostas.csv";
       link.click();
     }
+
+    // Botão para limpar todas as respostas
+    document.getElementById("btnLimpar").addEventListener("click", () => {
+      if (confirm("Tem certeza que deseja apagar TODAS as respostas?")) {
+        fetch("https://convite-backend-61sh.onrender.com/api/resposta", {
+          method: "DELETE"
+        })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.mensagem || "Respostas apagadas.");
+          location.reload();
+        })
+        .catch(() => alert("Erro ao apagar respostas."));
+      }
+    });
   </script>
 </body>
 </html>
