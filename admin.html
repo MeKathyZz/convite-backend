@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Respostas</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #eaeaea;
+    }
+    .center {
+      text-align: center;
+      margin-top: 20px;
+    }
+    #btnLimpar {
+      background-color: #d32f2f;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #btnLimpar:hover {
+      background-color: #b71c1c;
+    }
+    #contagem {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    #filtroNome {
+      margin-top: 20px;
+      padding: 8px;
+      width: 300px;
+    }
+    .loading {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Painel de Confirmação de Presença</h1>
+
+  <div class="center">
+    <input type="text" id="filtroNome" placeholder="🔍 Filtrar por nome..." oninput="filtrarTabela()">
+    <br>
+    <button onclick="exportarCSV()">📄 Exportar Respostas em CSV</button>
+    <button id="btnLimpar">🗑️ Limpar todas as respostas</button>
+    <div id="contagem"></div>
+    <canvas id="grafico" width="400" height="200"></canvas>
+  </div>
+
+  <table id="tabelaRespostas">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Resposta</th>
+        <th>Data</th>
+        <th>Apagar</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let dadosOriginais = [];
+
+    fetch("https://convite-backend-61sh.onrender.com/api/respostas")
+      .then(res => res.json())
+      .then(dados => {
+        dadosOriginais = dados;
+        preencherTabela(dados);
+        atualizarGrafico(dados);
+      });
+
+    function preencherTabela(dados) {
+      const tbody = document.querySelector("#tabelaRespostas tbody");
+      tbody.innerHTML = "";
+      let totalSim = 0;
+
+      dados.forEach(item => {
+        const nome = item.Nome || "—";
+        const resposta = item.Resposta || "—";
+        const data = item.Data || new Date().toISOString();
+        const id = item.ID || item.id || null;
+
+        const linha = document.createElement("tr");
+        linha.innerHTML = `
+          <td>${nome}</td>
+          <td>${resposta}</td>
+          <td>${new Date(data).toLocaleString()}</td>
+          <td>
+            ${id ? `<button onclick="apagarResposta('${id}', this)">🗑️</button>` : "—"}
+          </td>
+        `;
+        tbody.appendChild(linha);
+
+        if (resposta.toLowerCase() === "sim") totalSim++;
+      });
+
+      document.getElementById("contagem").textContent = `Total de confirmados: ${totalSim}`;
+    }
+
+    function apagarResposta(id, botao) {
+      if (confirm("Apagar esta resposta?")) {
+        botao.classList.add("loading");
+        fetch(`https://convite-backend-61sh.onrender.com/api/resposta/${id}`, {
+          method: "DELETE"
+        })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.mensagem || "Resposta apagada.");
+          botao.closest("tr").remove();
+        })
+        .catch(() => alert("Erro ao apagar resposta."));
+      }
+    }
+
+    function exportarCSV() {
+      const linhas = [["Nome", "Resposta", "Data"]];
+      document.querySelectorAll("#tabelaRespostas tbody tr").forEach(tr => {
+        const dados = Array.from(tr.children).slice(0, 3).map(td => td.textContent);
+        linhas.push(dados);
+      });
+
+      const csv = linhas.map(l => l.join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "respostas.csv";
+      link.click();
+    }
+
+    document.getElementById("btnLimpar").addEventListener("click", () => {
+      if (confirm("Tem certeza que deseja apagar TODAS as respostas?")) {
+        fetch("https://convite-backend-61sh.onrender.com/api/resposta", {
+          method: "DELETE"
+        })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.mensagem || "Respostas apagadas.");
+          location.reload();
+        })
+        .catch(() => alert("Erro ao apagar respostas."));
+      }
+    });
+
+    function filtrarTabela() {
+      const termo = document.getElementById("filtroNome").value.toLowerCase();
+      const filtrados = dadosOriginais.filter(item =>
+        (item.Nome || "").toLowerCase().includes(termo)
+      );
+      preencherTabela(filtrados);
+      atualizarGrafico(filtrados);
+    }
+
+    function atualizarGrafico(dados) {
+      const totalSim = dados.filter(r => r.Resposta?.toLowerCase() === "sim").length;
+      const totalNao = dados.filter(r => r.Resposta?.toLowerCase() === "não").length;
+
+      const ctx = document.getElementById("grafico").getContext("2d");
+      if (window.graficoPresenca) window.graficoPresenca.destroy();
+
+      window.graficoPresenca = new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: ["Sim", "Não"],
+          datasets: [{
+            data: [totalSim, totalNao],
+            backgroundColor: ["#4caf50", "#f44336"]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "bottom"
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
