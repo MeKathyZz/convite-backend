@@ -95,32 +95,32 @@
       });
 
     function preencherTabela(dados) {
-      const tbody = document.querySelector("#tabelaRespostas tbody");
-      tbody.innerHTML = "";
-      let totalSim = 0;
+  const tbody = document.querySelector("#tabelaRespostas tbody");
+  tbody.innerHTML = "";
+  let totalSim = 0;
 
-      dados.forEach(item => {
-        const nome = item.Nome || item.nome || "—";
-        const resposta = item.Resposta || item.resposta || "—";
-        const data = item.Data || item.data || new Date().toISOString();
-        const id = item.ID || item.id || null;
+  dados.forEach(item => {
+    const id = item.ID || item.id || "—";
+    const data = item.Data || item.data || "—";
+    const nome = item.Nome || item.nome || "—";
+    const resposta = item.Resposta || item.resposta || "—";
 
-        const linha = document.createElement("tr");
-        linha.innerHTML = `
-          <td>${nome}</td>
-          <td>${resposta}</td>
-          <td>${new Date(data).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}</td>
-          <td>
-            ${id ? `<button onclick="apagarResposta('${id}', this)">🗑️</button>` : "—"}
-          </td>
-        `;
-        tbody.appendChild(linha);
+    const linha = document.createElement("tr");
+    linha.innerHTML = `
+      <td>${nome}</td>
+      <td>${resposta}</td>
+      <td>${new Date(data).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}</td>
+      <td>
+        ${id !== "—" ? `<button onclick="apagarResposta('${id}', this)">🗑️</button>` : "—"}
+      </td>
+    `;
+    tbody.appendChild(linha);
 
-        if (resposta.toLowerCase() === "sim") totalSim++;
-      });
+    if (resposta.toLowerCase() === "sim") totalSim++;
+  });
 
-      document.getElementById("contagem").textContent = `Total de confirmados: ${totalSim}`;
-    }
+  document.getElementById("contagem").textContent = `Total de confirmados: ${totalSim}`;
+}
 
     function apagarResposta(id, botao) {
       if (confirm("Apagar esta resposta?")) {
