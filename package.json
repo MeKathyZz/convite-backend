@@ -13,6 +13,11 @@
   "dependencies": {
     "cors": "^2.8.5",
     "csv-parser": "^3.2.0",
+<<<<<<< HEAD
     "express": "^4.18.2"
+=======
+    "express": "^5.1.0",
+    "uuid": "^9.0.1"
+>>>>>>> 7c8bcfd (Adiciona uuid às dependências)
   }
 }

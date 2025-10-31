@@ -73,30 +73,48 @@
   <script>
     // Carrega respostas e preenche a tabela
     fetch("https://convite-backend-61sh.onrender.com/api/respostas")
-      .then(res => res.json())
-      .then(dados => {
-        const tbody = document.querySelector("#tabelaRespostas tbody");
-        let totalSim = 0;
+  .then(res => res.json())
+  .then(dados => {
+    const tbody = document.querySelector("#tabelaRespostas tbody");
+    let totalSim = 0;
 
-        dados.forEach(item => {
-          const nome = item.Nome || "—";
-          const resposta = item.Resposta || "—";
-          const data = item.Data || new Date().toISOString();
+    dados.forEach(item => {
+      const nome = item.Nome || "—";
+      const resposta = item.Resposta || "—";
+      const data = item.Data || new Date().toISOString();
+      const id = item.ID || item.id || null;
 
-          const linha = document.createElement("tr");
-          linha.innerHTML = `
-            <td>${nome}</td>
-            <td>${resposta}</td>
-            <td>${new Date(data).toLocaleString()}</td>
-            <td>—</td> <!-- Sem _id, não dá pra apagar individualmente -->
-          `;
-          tbody.appendChild(linha);
+      const linha = document.createElement("tr");
+      linha.innerHTML = `
+        <td>${nome}</td>
+        <td>${resposta}</td>
+        <td>${new Date(data).toLocaleString()}</td>
+        <td>
+          ${id ? `<button onclick="apagarResposta('${id}')">🗑️</button>` : "—"}
+        </td>
+      `;
+      tbody.appendChild(linha);
 
-          if (resposta && resposta.toLowerCase() === "sim") totalSim++;
-        });
+      if (resposta.toLowerCase() === "sim") totalSim++;
+    });
 
-        document.getElementById("contagem").textContent = `Total de confirmados: ${totalSim}`;
-      });
+    document.getElementById("contagem").textContent = `Total de confirmados: ${totalSim}`;
+  });
+
+// Função para apagar uma resposta específica
+function apagarResposta(id) {
+  if (confirm("Apagar esta resposta?")) {
+    fetch(`https://convite-backend-61sh.onrender.com/api/resposta/${id}`, {
+      method: "DELETE"
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.mensagem || "Resposta apagada.");
+      location.reload();
+    })
+    .catch(() => alert("Erro ao apagar resposta."));
+  }
+}
 
     // Exporta CSV da tabela
     function exportarCSV() {
