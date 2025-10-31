@@ -16,24 +16,30 @@ nomeConvidado.addEventListener("input", () => {
   btnNao.disabled = !nomePreenchido;
 });
 
-function enviarResposta(resposta) {
+function enviarResposta(respostaEscolhida) {
   const nome = nomeConvidado.value.trim() || "Anônimo";
-  const data = new Date().toISOString(); // <-- adiciona isso
+  const data = new Date().toISOString();
 
-  fetch("https://convite-backend-oyla.onrender.com/api/resposta", {
+  fetch("https://convite-backend-61sh.onrender.com/api/resposta", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ nome, resposta, data }),
+    body: JSON.stringify({ nome, resposta: respostaEscolhida, data }),
   });
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  if (localStorage.getItem("conviteAberto") === "true") {
+  const conviteAberto = localStorage.getItem("conviteAberto") === "true";
+
+  if (conviteAberto) {
     detalhes.classList.add("ativo");
     btnAbrir.textContent = "Fechar Convite ✖️";
     mensagemEspecial.style.display = "none";
+  } else {
+    mensagemEspecial.style.display = "block";
+    detalhes.classList.remove("ativo");
+    btnAbrir.textContent = "Abrir Convite 🎁";
   }
-  
+
   const respostaSalva = localStorage.getItem("respostaConvite");
 
   if (respostaSalva === "sim") {
@@ -45,8 +51,6 @@ window.addEventListener("DOMContentLoaded", () => {
     resposta.style.color = "#d32f2f";
     resposta.style.textAlign = "center";
   }
-
-  const musicaFundo = document.getElementById("musicaFundo");
 
   musicaFundo.play().catch(() => {
     document.addEventListener("click", () => {
@@ -66,7 +70,7 @@ const somNao = new Audio("Sons/nao.mp3");
 let musicaIniciada = false;
 
 function criarFaiscas(event) {
-  const cores = ["#ff0000","#ff7f00","#ffff00","#00ff00","#0000ff","#4b0082","#8f00ff"];
+  const cores = ["#ff0000", "#ff7f00", "#ffff00", "#00ff00", "#0000ff", "#4b0082", "#8f00ff"];
   const numParticulas = 20;
 
   for (let i = 0; i < numParticulas; i++) {
@@ -83,6 +87,19 @@ function criarFaiscas(event) {
 
     document.body.appendChild(particle);
     setTimeout(() => particle.remove(), 1500);
+  }
+}
+
+function explodirConfete() {
+  const cores = ["#ff69b4", "#ffd700", "#00bfff", "#32cd32", "#ff4500", "#8a2be2"];
+  for (let i = 0; i < 120; i++) {
+    const confete = document.createElement("div");
+    confete.classList.add("confete");
+    confete.style.left = Math.random() * window.innerWidth + "px";
+    confete.style.top = Math.random() * window.innerHeight + "px";
+    confete.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
+    document.body.appendChild(confete);
+    setTimeout(() => confete.remove(), 3000);
   }
 }
 
@@ -129,6 +146,7 @@ btnSim.addEventListener("click", (event) => {
   resposta.style.textAlign = "center";
 
   criarFaiscas(event);
+  explodirConfete();
 
   if (!somNao.paused) {
     somNao.pause();
@@ -155,4 +173,3 @@ btnNao.addEventListener("click", (event) => {
   somNao.play();
   somNao.addEventListener("ended", () => musicaFundo.volume = volumeNormal);
 });
-

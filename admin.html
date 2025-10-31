@@ -1,18 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Painel de Respostas</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    th { background-color: #eee; }
-    button { margin-top: 20px; padding: 10px 20px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+      margin: 0 auto 40px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      margin-bottom: 15px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #eaeaea;
+    }
+    .center {
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <h1>Painel de Respostas</h1>
+  <h1>Painel de Confirmação de Presença</h1>
+
+  <form onsubmit="enviarResposta(event)">
+    <input type="text" id="nome" placeholder="Seu nome" required>
+    <select id="resposta" required>
+      <option value="">Selecione sua resposta</option>
+      <option value="Sim">Sim</option>
+      <option value="Não">Não</option>
+    </select>
+    <button type="submit">Confirmar Presença</button>
+  </form>
+
+  <div class="center">
+    <button onclick="exportarCSV()">Exportar Respostas em CSV</button>
+  </div>
+
   <table id="tabelaRespostas">
     <thead>
       <tr>
@@ -23,10 +85,10 @@
     </thead>
     <tbody></tbody>
   </table>
-  <button onclick="exportarCSV()">Exportar para CSV</button>
 
   <script>
-    fetch("https://convite-backend-oyla.onrender.com/api/respostas")
+    // Carrega respostas e preenche a tabela
+    fetch("https://convite-backend-61sh.onrender.com/api/respostas")
       .then(res => res.json())
       .then(dados => {
         const tbody = document.querySelector("#tabelaRespostas tbody");
@@ -37,6 +99,29 @@
         });
       });
 
+    // Envia nova resposta
+    function enviarResposta(event) {
+      event.preventDefault();
+      const nome = document.querySelector("#nome").value.trim();
+      const resposta = document.querySelector("#resposta").value;
+      const data = new Date().toISOString();
+
+      fetch("https://convite-backend-61sh.onrender.com/api/resposta", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, resposta, data })
+      })
+      .then(res => {
+        if (res.ok) {
+          alert("Resposta enviada com sucesso!");
+          location.reload();
+        } else {
+          alert("Erro ao enviar resposta.");
+        }
+      });
+    }
+
+    // Exporta CSV da tabela
     function exportarCSV() {
       const linhas = [["Nome", "Resposta", "Data"]];
       document.querySelectorAll("#tabelaRespostas tbody tr").forEach(tr => {
