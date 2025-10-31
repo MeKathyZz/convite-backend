@@ -100,9 +100,9 @@
       let totalSim = 0;
 
       dados.forEach(item => {
-        const nome = item.Nome || "—";
-        const resposta = item.Resposta || "—";
-        const data = item.Data || new Date().toISOString();
+        const nome = item.Nome || item.nome || "—";
+        const resposta = item.Resposta || item.resposta || "—";
+        const data = item.Data || item.data || new Date().toISOString();
         const id = item.ID || item.id || null;
 
         const linha = document.createElement("tr");
