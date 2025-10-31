@@ -61,6 +61,17 @@ app.get("/admin", (req, res) => {
     });
 });
 
+app.get("/api/respostas", (req, res) => {
+  const resultados = [];
+
+  fs.createReadStream(caminhoArquivo)
+    .pipe(csv())
+    .on("data", (data) => resultados.push(data))
+    .on("end", () => {
+      res.json(resultados);
+    });
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
