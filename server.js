@@ -5,6 +5,8 @@ const csv = require("csv-parser");
 const { v4: uuidv4 } = require("uuid"); // ✅ Importa uuid
 const app = express();
 const PORT = process.env.PORT || 3000;
+const path = require("path");
+app.use(express.static("public"));
 
 app.use(cors());
 app.use(express.json());
@@ -33,34 +35,7 @@ app.post("/api/resposta", (req, res) => {
 
 // ✅ Rota para visualizar respostas em HTML
 app.get("/admin", (req, res) => {
-  const resultados = [];
-
-  fs.createReadStream(caminhoArquivo)
-    .pipe(csv())
-    .on("data", (data) => resultados.push(data))
-    .on("end", () => {
-      let html = `
-        <html>
-          <head>
-            <title>Respostas do Convite</title>
-            <style>
-              body { font-family: Arial; padding: 20px; }
-              table { border-collapse: collapse; width: 100%; }
-              th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-              th { background-color: #f2f2f2; }
-            </style>
-          </head>
-          <body>
-            <h2>Respostas Recebidas</h2>
-            <table>
-              <tr><th>Data</th><th>Nome</th><th>Resposta</th></tr>
-              ${resultados.map(r => `<tr><td>${r.Data}</td><td>${r.Nome}</td><td>${r.Resposta}</td></tr>`).join("")}
-            </table>
-          </body>
-        </html>
-      `;
-      res.send(html);
-    });
+  res.sendFile(path.join(__dirname, "public", "admin.html"));
 });
 
 // ✅ Rota para retornar respostas como JSON
