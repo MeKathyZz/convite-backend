@@ -101,13 +101,13 @@
 
   dados.forEach(item => {
     const id = item.ID || item.id || "—";
-    const data = item.Data || item.data || "—";
     const nome = item.Nome || item.nome || "—";
     const resposta = item.Resposta || item.resposta || "—";
+    const data = item.Data || item.data || "—";
 
     const linha = document.createElement("tr");
     linha.innerHTML = `
-      <td>${nome}</td>
+            <td>${nome}</td>
       <td>${resposta}</td>
       <td>${new Date(data).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}</td>
       <td>
